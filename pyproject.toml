@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "auto-coiner"
+version = "0.1.0"
+description = ""
+authors = ["Rak-Kyoung Choi <rakk4403@gmail.com>"]
+readme = "README.md"
+packages = [{include = "auto_coiner"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyupbit = "^0.2.33"
+pyjwt = "^2.7.0"
+pandas = "^2.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
