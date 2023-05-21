@@ -12,8 +12,9 @@ upbit = pyupbit.Upbit(ACCESS, SECRET)
 
 
 def calculate_slope(series, degree=1):
-    #if series.isnull().any():
-    #    return np.nan
+    pure_series = series.dropna()
+    if len(pure_series) < 2:
+        return np.nan
     return np.polyfit(range(len(series.dropna())), series.dropna(), degree)[0]
 
 
@@ -40,7 +41,7 @@ def trade_logic(ticker):
 
     atr = calculate_atr(high, low, close)
     todays_range = np.abs(open_value[-1] - close[-1])
-    
+
     slopes = [calculate_slope(ma) for ma in [ma5, ma10, ma20, ma60, ma120]]
     up_trend_count = len([s for s in slopes if s > 0])
     
