@@ -1,12 +1,48 @@
 from datetime import datetime, timedelta
 import time
 import os
+import pandas as pd
+from upbit import MyUpbit, trade_logic_backtest2
 
-from upbit import MyUpbit
+
+# data = pd.read_csv("ETH-USD.csv")
+
+# portfolio = {'cash': 100000000, 'coins': 0, 'sell_price': 0}
+
+# def current_value(open_value):
+#     return portfolio['cash'] + portfolio['coins'] * open_value
+
+# for i in range(len(data)):
+
+#     if i < 120 or i > 300:
+#         continue
+#     decision = trade_logic_backtest2(data, i)
+
+#     row = data.iloc[i]
+#     open_value = row['open']
+#     if decision == 'buy' and portfolio['cash'] > 0:
+#         target_coins = portfolio['cash']*0.05 / open_value
+#         portfolio['coins'] += target_coins
+#         portfolio['cash'] = portfolio['cash'] - (target_coins * open_value)
+#         portfolio['sell_price'] = open_value
+#         print(row['Date'], 'buy', current_value(open_value), portfolio['coins'], portfolio['cash'])
+#     elif decision == 'sell' and portfolio['coins'] > 0:
+#         target_coins = portfolio['coins'] * 0.5
+#         portfolio['cash'] += target_coins * open_value
+#         portfolio['coins'] = portfolio['coins'] - target_coins
+#         print(row['Date'], 'sell', current_value(open_value), portfolio['coins'], portfolio['cash'])
+#     else:
+#         print(row['Date'], decision, current_value(open_value), portfolio['coins'], portfolio['cash'])
+
+# portfolio_value = portfolio['cash'] + portfolio['coins'] * data.iloc[-1]['open']
+# print('Final portfolio value:', portfolio_value)
+# print('Profit:', portfolio_value - 100000000)
+
+# exit()
+
 
 ACCESS = os.environ['UPBIT_OPEN_API_ACCESS_KEY']
 SECRET = os.environ['UPBIT_OPEN_API_SECRET_KEY']
-
 
 if __name__ == "__main__":
     my_upbit = MyUpbit(ACCESS, SECRET)

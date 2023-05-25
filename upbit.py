@@ -33,17 +33,17 @@ class MyUpbit():
         ma120 = close.rolling(120).mean()
 
         atr = calculate_atr(high, low, close)
-        todays_range = np.abs(open_value[-1] - close[-1])
+        yesterday_range = np.abs(open_value[-2] - close[-2])
         slopes = [calculate_slope(ma) for ma in [ma5, ma10, ma20, ma60, ma120]]
         up_trend_count = len([s for s in slopes if s > 0])
 
         # Sell Logic
-        if up_trend_count < 3 and (todays_range > atr[-1] or (close[-1] < get_latest_high() * 0.95)):
+        if up_trend_count < 3 and (yesterday_range > atr[-1] or (close[-1] < get_latest_high() * 0.90)):
             return 'sell'
 
         # Buy Logic
         set_latest_high(close[-1])
-        if up_trend_count >= 3 and todays_range < atr[-1]:
+        if up_trend_count >= 3 and yesterday_range < atr[-1]:
             return 'buy'
 
         return 'hold'
@@ -53,7 +53,9 @@ def calculate_slope(series, degree=1):
     pure_series = series.dropna()
     if len(pure_series) < 2:
         return np.nan
-    return np.polyfit(range(len(series.dropna())), series.dropna(), degree)[0]
+    else:
+        y2, y1 = pure_series.iloc[-1], pure_series.iloc[-2]
+        return y2 - y1
 
 
 def calculate_atr(high, low, close, n=14):
@@ -96,17 +98,18 @@ def trade_logic_backtest2(data, i):
     else:
         yesterdays_range = np.nan
 
-    slopes = [calculate_slope(ma.dropna()) for ma in [ma5, ma10, ma20, ma60, ma120]]
+    slopes = [calculate_slope(ma) for ma in [ma5, ma10, ma20, ma60, ma120]]
+    # print(slopes)
     up_trend_count = len([s for s in slopes if s > 0])
 
     # Sell Logic
-    if (up_trend_count < 3 and yesterdays_range > atr.iloc[-1]): # or (close.iloc[-1] < get_latest_high() * 0.50):
+    if (up_trend_count < 3) and ((yesterdays_range > atr.iloc[-1]) or (close.iloc[-2] < get_latest_high() * 0.90)):
         return 'sell'
 
-    set_latest_high(close.iloc[-1])
+    
     # Buy Logic
+    set_latest_high(close.iloc[-2])
     if up_trend_count >= 3 and yesterdays_range < atr.iloc[-1]:
-
         return 'buy'
 
     return 'hold'
