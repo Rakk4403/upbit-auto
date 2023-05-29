@@ -49,7 +49,8 @@ if __name__ == "__main__":
     my_upbit = MyUpbit(ACCESS, SECRET)
     upbit = my_upbit.get_instance()
     slack_bot = MySlackBot()
-
+    slack_bot.send_message('#upbit', '매매 시작합니다.')
+    
     while True:
         now = datetime.now()
         ticker = "KRW-ETH"
