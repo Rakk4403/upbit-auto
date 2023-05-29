@@ -38,15 +38,18 @@ class MyUpbit():
         up_trend_count = len([s for s in slopes if s > 0])
 
         # Sell Logic
-        if up_trend_count < 3 and (yesterday_range > atr[-1] or (close[-1] < get_latest_high() * 0.90)):
-            return 'sell'
+        if up_trend_count < 3:
+            if yesterday_range > atr[-1]:
+                return ['sell', f'어제의 변동폭이 ATR보다 커요. ({yesterday_range} > {atr[-1]})']
+            if close[-1] < get_latest_high() * 0.90:
+                return ['sell', f'최근 고점({get_latest_high()})의 90% 이하로 떨어졌어요 ({close[-1]})']
 
         # Buy Logic
         set_latest_high(close[-1])
         if up_trend_count >= 3 and yesterday_range < atr[-1]:
-            return 'buy'
+            return ['buy', f'어제의 변동폭이 ATR보다 작아요. ({yesterday_range} < {atr[-1]})']
 
-        return 'hold'
+        return ['hold', '아무것도 아니에요.']
 
 
 def calculate_slope(series, degree=1):

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import time
 import os
 import pandas as pd
+from slackbot import MySlackBot
 from upbit import MyUpbit, trade_logic_backtest2
 
 
@@ -47,6 +48,7 @@ SECRET = os.environ['UPBIT_OPEN_API_SECRET_KEY']
 if __name__ == "__main__":
     my_upbit = MyUpbit(ACCESS, SECRET)
     upbit = my_upbit.get_instance()
+    slack_bot = MySlackBot()
 
     while True:
         now = datetime.now()
@@ -55,7 +57,7 @@ if __name__ == "__main__":
         # Run the trading logic once a day
         if now.hour == 0 and now.minute == 0:
             portfolio = my_upbit.get_portfolio()
-            decision = my_upbit.trade_logic(ticker)
+            [decision, reason] = my_upbit.trade_logic(ticker)
             
             amount = 0
             if decision == 'buy' and portfolio['cash'] > 0:
@@ -66,4 +68,5 @@ if __name__ == "__main__":
                 amount = portfolio['coins'] * 0.5
                 order = upbit.sell_market_order(ticker, amount)
             print(now, decision, amount, portfolio['cash'], portfolio['coins'])
+            slack_bot.send_message('#upbit', f'{now} {decision} {amount} {reason}\n{portfolio["cash"]} {portfolio["coins"]}')
         time.sleep(60)
