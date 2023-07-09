@@ -50,7 +50,7 @@ if __name__ == "__main__":
     upbit = my_upbit.get_instance()
     slack_bot = MySlackBot()
     slack_bot.send_message('#upbit', '매매 시작합니다.')
-    
+
     while True:
         now = datetime.now()
         ticker = "KRW-ETH"
@@ -69,5 +69,5 @@ if __name__ == "__main__":
                 amount = portfolio['coins'] * 0.5
                 order = upbit.sell_market_order(ticker, amount)
             print(now, decision, amount, portfolio['cash'], portfolio['coins'])
-            slack_bot.send_message('#upbit', f'{now} {decision} {amount} {reason}\n{portfolio["cash"]} {portfolio["coins"]}')
+            slack_bot.send_message('#upbit', f'{now} {decision} {amount}원 {reason}\n현재가치: {portfolio["total"]}\n======\nCash: {portfolio["cash"]}\nETH: {portfolio["coins"]}')
         time.sleep(60)

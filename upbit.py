@@ -16,7 +16,8 @@ class MyUpbit():
         upbit = self.upbit
         cash = upbit.get_balance('KRW')
         eth = upbit.get_balance('KRW-ETH')
-        return {'cash': cash, 'coins': eth}
+        total = cash + eth * pyupbit.get_current_price('KRW-ETH')
+        return {'cash': cash, 'coins': eth, 'total': total}
     
     def trade_logic(self, ticker):
         data = pyupbit.get_ohlcv(ticker, interval="day", count=120)
